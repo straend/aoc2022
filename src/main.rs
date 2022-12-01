@@ -2,11 +2,13 @@
 use std::io;
 mod helpers;
 
+mod day1;
 // Day modules
 
 fn main() -> io::Result<()> {
     let day = std::env::args().nth(1).expect("No day given");
     match day.parse::<i32>().unwrap() {
+        1 => day1::run()?,
         // Day invocations
         _ => println!("Not implemented"),
     }
