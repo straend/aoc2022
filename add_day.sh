@@ -10,7 +10,7 @@ sed "s|\DAY_NUMBER|${day}|g" "day_template.rs" > "src/day$day.rs"
 
 # Add module and match to main.rs
 sed  -i "/\/\/ Day modules/i mod day${day};" src/main.rs 
-sed  -i "/[[:blank:]]*\/\/ Day invocations/i ${day} => day${day}::run()?," src/main.rs 
+sed  -i "/[[:blank:]]*\/\/ Day invocations/i ${day} => day${day}::run(bench)?," src/main.rs 
 rustfmt src/main.rs
 rustfmt "src/day$day.rs"
 

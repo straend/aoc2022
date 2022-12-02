@@ -1,10 +1,20 @@
 use crate::helpers;
 use std::io;
+use std::time::Instant;
 
 
-pub fn run() -> io::Result<()> {
-    println!("\n\nDay 2");
+pub fn run(bench: bool) -> io::Result<(u128, u128, u128)> {
+    if !bench {
+        println!("\n\nDay 2");
+    }
+    let start = Instant::now();
+    
     let lines = helpers::read_file_to_vec::<String>("inputs/day2.txt");
+    let lines: Vec<(&str, &str)> = lines.iter().map(|x| { x.split_once(" ").unwrap() }).collect();
+    
+    let t_input = start.elapsed().as_micros();
+    
+    let start = Instant::now();
     // You  Win      6 points
     //      Loose    0
     //      Draw     3
@@ -15,7 +25,7 @@ pub fn run() -> io::Result<()> {
     
     // Not so elegant, bore of a brute force mapping, but it works
     let sum:i32 = lines.iter().map(|x| {
-        match x.split_once(" ").unwrap() {
+        match x {
             // A X Rock
             // B Y Paper
             // C Z Scissor
@@ -36,10 +46,15 @@ pub fn run() -> io::Result<()> {
             (_, _) => 0,
         }
     }).fold(0, |acc, x| acc+ x);
-    println!("Part1: {:?}", sum);
+    
+    let t_part1 = start.elapsed().as_micros();
+    if !bench {
+        println!("Part1: {:?}", sum);
+    }
+    let start = Instant::now();
 
     let sum:i32 = lines.iter().map(|x| {
-        match x.split_once(" ").unwrap() {
+        match x {
             // A X Rock
             // B Y Paper
             // C Z Scissor
@@ -62,7 +77,11 @@ pub fn run() -> io::Result<()> {
             (_, _) => 0,
         }
     }).fold(0, |acc, x| acc+ x);
-    println!("Part2: {}", sum);
 
-    Ok(())
+    let t_part2 = start.elapsed().as_micros();
+    if !bench {
+        println!("Part2: {}", sum);
+    }
+
+    Ok((t_input, t_part1, t_part2))
 }

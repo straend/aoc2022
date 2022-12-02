@@ -1,26 +1,37 @@
 use crate::helpers;
 use std::io;
+use std::time::Instant;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn check_equals() {
-        let res = 10;
-        assert_eq!(res, 10);
+pub fn run(bench: bool) -> io::Result<(u128, u128, u128)> {
+    if !bench {
+        println!("\n\nDay DAY_NUMBER");
     }
-}
+    let start = Instant::now();
 
-pub fn run() -> io::Result<()> {
-    println!("\n\nDay DAY_NUMBER");
+    // Input goes here
+    let lines = helpers::read_file_to_vec::<String>("inputs/dayDAY_NUMBER.txt");
+    
 
-    // Reads one line as i64
-    let lines = helpers::read_file_to_vec::<i64>("inputs/dayDAY_NUMBER.txt");
+    let t_input = start.elapsed().as_micros();
+    let start = Instant::now();
+    
+    // Part 1 goes here
+    
+    let t_part1 = start.elapsed().as_micros();
+    if !bench {
+        println!("Part1: {:?}", 1);
+    }
+    let start = Instant::now();
+    
+    // Part 2 Goes here
 
-    println!("Part1: {}", 1);
 
-    println!("Part2: {}", 2);
+    let t_part2 = start.elapsed().as_micros();
+    if !bench {
+        println!("Part2: {:?}", 2);
+    }
 
-    Ok(())
+    Ok((t_input, t_part1, t_part2))
+
+
 }

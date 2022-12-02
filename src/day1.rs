@@ -1,8 +1,12 @@
 use crate::helpers;
 use std::io;
+use std::time::Instant;
 
-pub fn run() -> io::Result<()> {
-    println!("\n\nDay 1");
+pub fn run(bench: bool) -> io::Result<(u128, u128, u128)> {
+    if !bench {
+        println!("\n\nDay 1");
+    }
+    let start = Instant::now();
 
     // Reads one line as str
     let lines = helpers::read_file_to_vec::<String>("inputs/day1.txt");
@@ -14,6 +18,9 @@ pub fn run() -> io::Result<()> {
         })
         .collect();
 
+    let t_input = start.elapsed().as_micros();
+    let start = Instant::now();
+    
     let elfs: Vec<Vec<i32>> = cc.into_iter().fold(Vec::new(), |mut acc, x| {
         if x == 0 || acc.is_empty() {
             acc.push(Vec::new());
@@ -27,11 +34,23 @@ pub fn run() -> io::Result<()> {
         .iter()
         .map(|x| x.iter().fold(0, |acc, x| acc + x))
         .collect();
-    println!("Part1: {:?}", sums.iter().max());
-
+    let p1 = sums.iter().max();
+    
+    let t_part1 = start.elapsed().as_micros();
+    if !bench {
+        println!("Part1: {:?}", p1);
+    }
+    let start = Instant::now();
+    
     sums.sort_by(|a, b| b.cmp(a));
     let top3: i32 = sums.iter().take(3).sum();
-    println!("Part2: {:?}", top3);
 
-    Ok(())
+    let t_part2 = start.elapsed().as_micros();
+    if !bench {
+        println!("Part2: {}", top3);
+    }
+
+    Ok((t_input, t_part1, t_part2))
+
+
 }
