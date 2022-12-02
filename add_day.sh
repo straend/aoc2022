@@ -8,6 +8,10 @@ echo "Adding day $day"
 # Replace day number in template and create new day file
 sed "s|\DAY_NUMBER|${day}|g" "day_template.rs" > "src/day$day.rs"
 
+# Create Input files for easy filling
+touch "input/day$day_test.txt"
+touch "input/day$day.txt"
+
 # Add module and match to main.rs
 sed  -i "/\/\/ Day modules/i mod day${day};" src/main.rs 
 sed  -i "/[[:blank:]]*\/\/ Day invocations/i ${day} => day${day}::run(bench)?," src/main.rs 

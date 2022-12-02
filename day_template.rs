@@ -9,7 +9,7 @@ pub fn run(bench: bool) -> io::Result<(u128, u128, u128)> {
     let start = Instant::now();
 
     // Input goes here
-    let lines = helpers::read_file_to_vec::<String>("inputs/dayDAY_NUMBER.txt");
+    let lines = helpers::read_file_to_vec::<String>("inputs/dayDAY_NUMBER_test.txt");
     
 
     let t_input = start.elapsed().as_micros();
