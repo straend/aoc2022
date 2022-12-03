@@ -19,76 +19,38 @@ mod tests {
     }
 }
 
-const LETTER_A: u8 = 'A' as u8;
-const LETTER_Z: u8 = 'Z' as u8;
-const LETTER_S_A: u8 = 'a' as u8;
-const LETTER_S_Z: u8 = 'z' as u8;
-
 pub fn run_part1(input: &Vec<String>) -> i128 {
-    let p: Vec<(Vec<u8>, Vec<u8>)> = input
-        .iter()
-        .map(|x| {
-            let sp = x.split_at(x.len() / 2);
-            let v1: Vec<u8> =
-                sp.0.bytes()
-                    .map(|b| match b {
-                        LETTER_A..=LETTER_Z => b - 38,
-                        LETTER_S_A..=LETTER_S_Z => b - 96,
-                        _ => 0,
-                    })
-                    .collect();
-            let v2: Vec<u8> =
-                sp.1.bytes()
-                    .map(|b| match b {
-                        LETTER_A..=LETTER_Z => b - 38,
-                        LETTER_S_A..=LETTER_S_Z => b - 96,
-                        _ => 0,
-                    })
-                    .collect();
-            (v1, v2)
-        })
-        .collect();
-    let mut intersect = Vec::new();
-    for l in &p {
-        for x in l.0.iter().filter(|u| l.1.contains(u)) {
-            intersect.push(*x);
-            // Only one item "extra" per backpack
-            break;
+    let mut sum:i32=0;
+    for l in input {
+        let (s1,s2) = l.split_at(l.len()/2);
+        for x in s1.chars() {
+            if s2.contains(x) {
+                sum += if x.is_ascii_uppercase() {x as i32 - 38} else {x as i32 - 96} as i32;
+                break;
+            }
         }
+
     }
-    intersect.iter().fold(0, |acc, x| acc + *x as i128)
+
+    sum as i128
 }
 
 pub fn run_part2(input: &Vec<String>) -> i128 {
-    let p: Vec<Vec<u8>> = input
-        .iter()
-        .map(|x| {
-            let v1: Vec<u8> = x
-                .bytes()
-                .map(|b| match b {
-                    LETTER_A..=LETTER_Z => b - 38,
-                    LETTER_S_A..=LETTER_S_Z => b - 96,
-                    _ => 0,
-                })
-                .collect();
-
-            v1
-        })
-        .collect();
-    let mut iter = p.iter();
-    let mut codes: Vec<u8> = Vec::new();
+    let mut iter = input.iter();
+    let mut sum = 0;
     for _ in 0..iter.len() / 3 {
         let v1 = iter.next().unwrap();
         let v2 = iter.next().unwrap();
         let v3 = iter.next().unwrap();
-        for c in v1 {
-            if v2.contains(c) && v3.contains(c) {
-                codes.push(*c);
+        for x in v1.chars() {
+            if v2.contains(x) && v3.contains(x) {
+                sum += if x.is_ascii_uppercase() {x as i32 - 38} else {x as i32 - 96} as i32;
+                
                 break;
             }
         }
     }
-    codes.iter().fold(0, |acc, x| acc + *x as i128)
+    sum as i128
 }
 
 pub fn run() -> io::Result<()> {
