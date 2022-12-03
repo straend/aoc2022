@@ -1,4 +1,4 @@
-#[allow(dead_code)]
+#![allow(unused)]
 use std::collections::HashMap;
 use std::fmt;
 use std::fs::File;
