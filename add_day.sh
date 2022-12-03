@@ -9,13 +9,30 @@ echo "Adding day $day"
 sed "s|\DAY_NUMBER|${day}|g" "day_template.rs" > "src/day$day.rs"
 
 # Create Input files for easy filling
-touch "inputs/day$day_test.txt"
-touch "inputs/day$day.txt"
+touch "inputs/day${day}_test.txt"
+touch "inputs/day${day}.txt"
 
-# Add module and match to main.rs
-sed  -i "/\/\/ Day modules/i mod day${day};" src/main.rs 
-sed  -i "/[[:blank:]]*\/\/ Day invocations/i ${day} => day${day}::run(bench)?," src/main.rs 
-rustfmt src/main.rs
+# Add benchmarks
+sed "s|\DAY_NUMBER|${day}|g" "bench_template.rs" > "benches/day${day}.rs"
+sed  -i "/[[:blank:]]*\/\/ Add days here/i mod day${day};" benches/aoc.rs
+
+
+bench_day_code="criterion_group!(day${day}, day${day}::bench_day${day}_p1, day${day}::bench_day${day}_p2);"
+sed  -i "/[[:blank:]]*\/\/ Add day group here/i ${bench_day_code}" benches/aoc.rs
+
+# Add group to main
+sed -i "\$s/)/, day${day})/" benches/aoc.rs
+
+# Add match to main.rs
+sed  -i "/[[:blank:]]*\/\/ Day invocations/i ${day} => day${day}::run()?," src/bin/main.rs 
+echo "pub mod day${day};" >> src/lib.rs
+
+# Format all touched files
 rustfmt "src/day$day.rs"
+rustfmt src/bin/main.rs
+rustfmt src/lib.rs
+rustfmt benches/aoc.rs
+rustfmt "benches/day$day.rs"
+
 
 fi

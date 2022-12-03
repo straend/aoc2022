@@ -1,6 +1,5 @@
 use crate::helpers;
 use std::io;
-use std::time::Instant;
 
 #[cfg(test)]
 mod tests {
@@ -87,32 +86,16 @@ pub fn run_part2(input: &Vec<String>) -> i32 {
         .fold(0, |acc, x| acc + x)
 }
 
-pub fn run(bench: bool) -> io::Result<(u128, u128, u128)> {
-    if !bench {
-        println!("\n\nDay 2");
-    }
-    let start = Instant::now();
+pub fn run() -> io::Result<()> {
+    println!("\n\nDay 2");
 
     let lines = helpers::read_file_to_vec::<String>("inputs/day2.txt");
-    //let lines: Vec<(&str, &str)> = lines.iter().map(|x| { x.split_once(" ").unwrap() }).collect();
 
-    let t_input = start.elapsed().as_micros();
-
-    let start = Instant::now();
     let sum = run_part1(&lines);
-
-    let t_part1 = start.elapsed().as_micros();
-    if !bench {
-        println!("Part1: {:?}", sum);
-    }
-    let start = Instant::now();
+    println!("Part1: {:?}", sum);
 
     let sum: i32 = run_part2(&lines);
+    println!("Part2: {}", sum);
 
-    let t_part2 = start.elapsed().as_micros();
-    if !bench {
-        println!("Part2: {}", sum);
-    }
-
-    Ok((t_input, t_part1, t_part2))
+    Ok(())
 }

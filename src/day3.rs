@@ -1,6 +1,5 @@
 use crate::helpers;
 use std::io;
-use std::time::Instant;
 
 #[cfg(test)]
 mod tests {
@@ -92,35 +91,19 @@ pub fn run_part2(input: &Vec<String>) -> i128 {
     codes.iter().fold(0, |acc, x| acc + *x as i128)
 }
 
-pub fn run(bench: bool) -> io::Result<(u128, u128, u128)> {
-    if !bench {
-        println!("\n\nDay 3");
-    }
-    let start = Instant::now();
+pub fn run() -> io::Result<()> {
+    println!("\n\nDay 3");
 
     // Input goes here
     let lines = helpers::read_file_to_vec::<String>("inputs/day3.txt");
 
-    let t_input = start.elapsed().as_micros();
-    let start = Instant::now();
-
     // Part 1 goes here
     let p1 = run_part1(&lines);
-
-    let t_part1 = start.elapsed().as_micros();
-    if !bench {
-        println!("Part1: {:?}", p1);
-    }
-    let start = Instant::now();
+    println!("Part1: {:?}", p1);
 
     // Part 2 Goes here
     let p2 = run_part2(&lines);
+    println!("Part2: {:?}", p2);
 
-    let t_part2 = start.elapsed().as_micros();
-
-    if !bench {
-        println!("Part2: {:?}", p2);
-    }
-
-    Ok((t_input, t_part1, t_part2))
+    Ok(())
 }

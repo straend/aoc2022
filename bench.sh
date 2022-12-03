@@ -5,9 +5,9 @@ cargo build --release
 input=()
 p1=()
 p2=()
-executions=10
+executions=100
 for i in `seq ${executions}`; do
-t=$(target/release/aoc2022 "$day" bench)
+t=$(target/release/main "$day" bench)
 IFS="\t" set $t
 input+=($1)
 p1+=($2)
