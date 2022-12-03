@@ -20,7 +20,7 @@ pub fn run(bench: bool) -> io::Result<(u128, u128, u128)> {
 
     let t_input = start.elapsed().as_micros();
     let start = Instant::now();
-    
+
     let elfs: Vec<Vec<i32>> = cc.into_iter().fold(Vec::new(), |mut acc, x| {
         if x == 0 || acc.is_empty() {
             acc.push(Vec::new());
@@ -35,13 +35,13 @@ pub fn run(bench: bool) -> io::Result<(u128, u128, u128)> {
         .map(|x| x.iter().fold(0, |acc, x| acc + x))
         .collect();
     let p1 = sums.iter().max();
-    
+
     let t_part1 = start.elapsed().as_micros();
     if !bench {
         println!("Part1: {:?}", p1);
     }
     let start = Instant::now();
-    
+
     sums.sort_by(|a, b| b.cmp(a));
     let top3: i32 = sums.iter().take(3).sum();
 
@@ -51,6 +51,4 @@ pub fn run(bench: bool) -> io::Result<(u128, u128, u128)> {
     }
 
     Ok((t_input, t_part1, t_part2))
-
-
 }
