@@ -4,6 +4,7 @@ mod helpers;
 
 mod day1;
 mod day2;
+mod day3;
 // Day modules
 
 fn main() -> io::Result<()> {
@@ -12,6 +13,7 @@ fn main() -> io::Result<()> {
     let res = match day.parse::<i32>().unwrap() {
         1 => day1::run(bench)?,
         2 => day2::run(bench)?,
+        3 => day3::run(bench)?,
         // Day invocations
         _ => (0, 0, 0),
     };
