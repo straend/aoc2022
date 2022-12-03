@@ -9,8 +9,8 @@ echo "Adding day $day"
 sed "s|\DAY_NUMBER|${day}|g" "day_template.rs" > "src/day$day.rs"
 
 # Create Input files for easy filling
-touch "input/day$day_test.txt"
-touch "input/day$day.txt"
+touch "inputs/day$day_test.txt"
+touch "inputs/day$day.txt"
 
 # Add module and match to main.rs
 sed  -i "/\/\/ Day modules/i mod day${day};" src/main.rs 
