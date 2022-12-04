@@ -20,16 +20,19 @@ mod tests {
 }
 
 pub fn run_part1(input: &Vec<String>) -> i128 {
-    let mut sum:i32=0;
+    let mut sum: i32 = 0;
     for l in input {
-        let (s1,s2) = l.split_at(l.len()/2);
+        let (s1, s2) = l.split_at(l.len() / 2);
         for x in s1.chars() {
             if s2.contains(x) {
-                sum += if x.is_ascii_uppercase() {x as i32 - 38} else {x as i32 - 96} as i32;
+                sum += if x.is_ascii_uppercase() {
+                    x as i32 - 38
+                } else {
+                    x as i32 - 96
+                } as i32;
                 break;
             }
         }
-
     }
 
     sum as i128
@@ -44,8 +47,12 @@ pub fn run_part2(input: &Vec<String>) -> i128 {
         let v3 = iter.next().unwrap();
         for x in v1.chars() {
             if v2.contains(x) && v3.contains(x) {
-                sum += if x.is_ascii_uppercase() {x as i32 - 38} else {x as i32 - 96} as i32;
-                
+                sum += if x.is_ascii_uppercase() {
+                    x as i32 - 38
+                } else {
+                    x as i32 - 96
+                } as i32;
+
                 break;
             }
         }
