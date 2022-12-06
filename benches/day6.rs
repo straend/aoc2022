@@ -1,4 +1,4 @@
-use criterion::{black_box, Criterion};
+use criterion::{black_box, Criterion, BenchmarkId};
 
 use aoc2022::*;
 
@@ -10,7 +10,14 @@ pub fn bench_day6_p1(c: &mut Criterion) {
 }
 pub fn bench_day6_p2(c: &mut Criterion) {
     let lines = helpers::read_file_to_vec::<String>("inputs/day6.txt");
-    c.bench_function("Day6 Part 2", |b| {
-        b.iter(|| day6::run_part2(black_box(&lines.first().unwrap())))
-    });
+
+    let mut group = c.benchmark_group("Day6 Part 2");
+    let i = lines.first().unwrap();
+    group.bench_with_input(BenchmarkId::new("Homemade", i), i, 
+            |b, i| b.iter(|| day6::run_part2(i)));
+    group.bench_with_input(BenchmarkId::new("Itertools", i), i, 
+            |b, i| b.iter(|| day6::run_part2_itertools(i)));
+            
+
+    group.finish();
 }

@@ -1,5 +1,6 @@
 use crate::helpers;
-use std::{io, collections::{HashSet, HashMap}};
+use std::{io, collections::HashMap};
+use itertools::Itertools;
 
 #[cfg(test)]
 mod tests {
@@ -21,6 +22,12 @@ mod tests {
         assert_eq!(run_part2(&String::from("nppdvjthqldpwncqszvftbrmjlhg")), 23);
         assert_eq!(run_part2(&String::from("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg")), 29);
         assert_eq!(run_part2(&String::from("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw")), 26);
+
+        assert_eq!(run_part2_itertools(&String::from("mjqjpqmgbljsphdztnvjfqwrcgsmlb")), 19);
+        assert_eq!(run_part2_itertools(&String::from("bvwbjplbgvbhsrlpgdmjqwftvncz")), 23);
+        assert_eq!(run_part2_itertools(&String::from("nppdvjthqldpwncqszvftbrmjlhg")), 23);
+        assert_eq!(run_part2_itertools(&String::from("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg")), 29);
+        assert_eq!(run_part2_itertools(&String::from("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw")), 26);
     }
 }
 
@@ -32,7 +39,7 @@ pub fn run_part1(input: &String) -> usize {
     let mut c = iter.next().unwrap();
     let mut d = iter.next().unwrap();
     
-    for i in 4..input.len()-4 {
+    for i in 4..input.len() {
         if a != b && a != c && a != d && b!=c && b!=d && c!=d {
             return i;
         }
@@ -44,12 +51,20 @@ pub fn run_part1(input: &String) -> usize {
     0
     
 }
-
+pub fn run_part2_itertools(input: &String) -> usize {
+    for i in 0..input.len() {
+        if input.chars().skip(i).take(14).unique().count() == 14 {
+            return i+14
+        }
+    }
+    0
+}
 pub fn run_part2(input: &String) -> usize {
     const UNIQUE_CHARS:usize = 14;
     if input.len() < UNIQUE_CHARS {
         return  0;
     }
+    
     let mut map:HashMap<char, u32> = HashMap::with_capacity(UNIQUE_CHARS);
     let mut iter = input.chars();
     let mut iter_remove = input.chars();
@@ -75,10 +90,11 @@ pub fn run_part2(input: &String) -> usize {
             *x += 1;
         } else {
             map.insert(n, 1);
+            if map.iter().filter(| (_,v) | **v == 1).count() == UNIQUE_CHARS {
+                return i;
+            }
         }
-        if map.iter().filter(| (_,v) | **v == 1).count() == UNIQUE_CHARS {
-            return i;
-        }
+
     }
     
     0
