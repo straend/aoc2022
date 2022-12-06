@@ -1,4 +1,4 @@
-use criterion::{black_box, Criterion, BenchmarkId};
+use criterion::{black_box, BenchmarkId, Criterion};
 
 use aoc2022::*;
 
@@ -13,11 +13,12 @@ pub fn bench_day6_p2(c: &mut Criterion) {
 
     let mut group = c.benchmark_group("Day6 Part 2");
     let i = lines.first().unwrap();
-    group.bench_with_input(BenchmarkId::new("Homemade", "HashMaps"), i, 
-            |b, i| b.iter(|| day6::run_part2(i)));
-    group.bench_with_input(BenchmarkId::new("Itertools", "Unique"), i, 
-            |b, i| b.iter(|| day6::run_part2_itertools(i)));
-            
+    group.bench_with_input(BenchmarkId::new("Homemade", "HashMaps"), i, |b, i| {
+        b.iter(|| day6::run_part2(i))
+    });
+    group.bench_with_input(BenchmarkId::new("Itertools", "Unique"), i, |b, i| {
+        b.iter(|| day6::run_part2_itertools(i))
+    });
 
     group.finish();
 }
