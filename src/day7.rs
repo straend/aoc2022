@@ -1,5 +1,5 @@
 use crate::helpers;
-use std::{collections::HashMap, hash::Hash, io, str::SplitTerminator};
+use std::{collections::HashMap, io};
 
 #[cfg(test)]
 mod tests {
@@ -32,16 +32,6 @@ struct FSEntry<'a> {
     size: usize,
     fstype: FSType,
     childs: HashMap<&'a str, FSEntry<'a>>,
-}
-#[derive(Debug)]
-struct FSFile {
-    name: String,
-    size: usize,
-}
-#[derive(Debug)]
-struct FSDir<'a> {
-    name: String,
-    childs: HashMap<String, FSEntry<'a>>,
 }
 
 fn parse_input(input: &Vec<String>) -> FSEntry {
@@ -91,7 +81,7 @@ fn parse_input(input: &Vec<String>) -> FSEntry {
             "dir" => {
                 let mut x = &mut root;
                 for p in path.iter().skip(1) {
-                    let mut yy = x.childs.get_mut(p.as_str()).unwrap();
+                    let yy = x.childs.get_mut(p.as_str()).unwrap();
 
                     x = yy;
                 }
@@ -112,7 +102,7 @@ fn parse_input(input: &Vec<String>) -> FSEntry {
                     Ok(size) => {
                         let mut x = &mut root;
                         for p in path.iter().skip(1) {
-                            let mut yy = x.childs.get_mut(p.as_str()).unwrap();
+                            let yy = x.childs.get_mut(p.as_str()).unwrap();
                             // Also add size of current folder to parent folders
                             if yy.fstype == FSType::Directory {
                                 x.size += size;
@@ -124,7 +114,7 @@ fn parse_input(input: &Vec<String>) -> FSEntry {
                             name: String::from(splits[1]),
                             childs: vv,
                             fstype: FSType::File,
-                            size: size,
+                            size,
                         };
                         x.size += size;
                         x.childs.insert(splits[1], v);
@@ -138,11 +128,13 @@ fn parse_input(input: &Vec<String>) -> FSEntry {
     root
 }
 
+#[allow(dead_code)]
 fn print_root(root: &FSEntry) {
     println!("{} ({})", root.size, root.name);
     print_child(1, &root.childs);
 }
 
+#[allow(dead_code)]
 fn print_child(depth: usize, entries: &HashMap<&str, FSEntry>) {
     for (k, v) in entries {
         for _ in 0..depth {
@@ -161,11 +153,11 @@ fn print_child(depth: usize, entries: &HashMap<&str, FSEntry>) {
 
 fn get_size_under(size: usize, entries: &HashMap<&str, FSEntry>) -> usize {
     let mut ret = 0;
-    for (k, v) in entries {
+    for (_, v) in entries {
         if v.fstype == FSType::Directory && v.size <= size {
             ret += v.size;
         }
-        for (c, vv) in &v.childs {
+        for (_, vv) in &v.childs {
             ret += get_size_under(size, &vv.childs);
             if vv.fstype == FSType::Directory && vv.size < size {
                 ret += vv.size;
@@ -179,11 +171,11 @@ fn get_size_under(size: usize, entries: &HashMap<&str, FSEntry>) -> usize {
 fn get_folders_over(size: usize, entries: &HashMap<&str, FSEntry>) -> Vec<usize> {
     let mut ret = Vec::new();
 
-    for (k, v) in entries {
+    for (_, v) in entries {
         if v.fstype == FSType::Directory && v.size >= size {
             ret.push(v.size);
         }
-        for (c, vv) in &v.childs {
+        for (_, vv) in &v.childs {
             ret.append(&mut get_folders_over(size, &vv.childs));
             if vv.fstype == FSType::Directory && vv.size >= size {
                 ret.push(vv.size);
