@@ -1,10 +1,9 @@
 use itertools::Itertools;
 
 use crate::helpers;
-use num::integer::{self, lcm};
+use num::integer::lcm;
 use std::{
     collections::{HashMap, VecDeque},
-    hash::Hash,
     io,
     str::FromStr,
 };
@@ -92,8 +91,7 @@ impl FromStr for Operation {
                     old: false,
                 }),
                 _ => Err(()),
-            },
-            _ => Err(()),
+            }
         }
     }
 }
@@ -209,56 +207,49 @@ impl FromStr for TestOper {
 }
 trait MonkeyMap {
     fn one_round(&mut self, modulor: usize);
-    fn monkey_busiess(self) -> usize;
+    fn monkey_business(self) -> usize;
     fn get_modulor(&self) -> usize;
 }
 
 impl MonkeyMap for HashMap<usize, Monkey> {
     fn one_round(&mut self, modulor: usize) {
         for i in 0..self.len() {
-            // (true, false)
-            let mut throw: (usize, usize) = (0, 0);
-            let mut divby: usize = 0;
-            let mut items: usize = 0;
-            {
-                let m = self.get_mut(&i).unwrap();
-                items = m.items.len();
-                m.inspections += items;
-                for item in m.items.iter_mut() {
-                    *item = match (&m.operation.instruction, &m.operation.old) {
-                        (Instruction::Addition, false) => *item + m.operation.param,
-                        (Instruction::Addition, true) => *item + *item,
-                        (Instruction::Subtraction, false) => *item - m.operation.param,
-                        (Instruction::Subtraction, true) => *item - *item,
-                        (Instruction::Multiplication, false) => *item * m.operation.param,
-                        (Instruction::Multiplication, true) => *item * *item,
-                        (Instruction::Division, false) => *item / m.operation.param,
-                        (Instruction::Division, true) => *item / *item,
-                    };
+            let m = self.get_mut(&i).unwrap();
+            let items = m.items.len();
+            m.inspections += items;
+            for item in m.items.iter_mut() {
+                *item = match (&m.operation.instruction, &m.operation.old) {
+                    (Instruction::Addition, false) => *item + m.operation.param,
+                    (Instruction::Addition, true) => *item + *item,
+                    (Instruction::Subtraction, false) => *item - m.operation.param,
+                    (Instruction::Subtraction, true) => *item - *item,
+                    (Instruction::Multiplication, false) => *item * m.operation.param,
+                    (Instruction::Multiplication, true) => *item * *item,
+                    (Instruction::Division, false) => *item / m.operation.param,
+                    (Instruction::Division, true) => *item / *item,
+                };
 
-                    // Monkey inspected item, and item is still whole, reduce worryingfactor
-                    if modulor == 0 {
-                        *item = *item / 3;
-                    } else {
-                        *item = *item % modulor;
-                    }
+                // Monkey inspected item, and item is still whole, reduce worryingfactor
+                if modulor == 0 {
+                    *item = *item / 3;
+                } else {
+                    *item = *item % modulor;
                 }
-                throw = (m.test.iftrue, m.test.iffalse);
-                divby = m.test.param;
             }
-            for k in 0..items {
+            let throw = (m.test.iftrue, m.test.iffalse);
+            let divby = m.test.param;
+            
+            for _ in 0..items {
                 // check item
-
                 let it = self.get_mut(&i).unwrap().items.pop_front().unwrap();
                 let throw_to = if it % divby == 0 { throw.0 } else { throw.1 };
-                //println!("Throwing to {}", throw_to);
                 self.get_mut(&throw_to).unwrap().items.push_back(it);
             }
         }
     }
 
-    fn monkey_busiess(self) -> usize {
-        let mut iters: Vec<usize> = self.iter().map(|(k, v)| v.inspections).collect();
+    fn monkey_business(self) -> usize {
+        let mut iters: Vec<usize> = self.iter().map(|(_, v)| v.inspections).collect();
         iters.sort();
         iters.reverse();
 
@@ -291,11 +282,11 @@ fn read_input(input: &Vec<String>) -> HashMap<usize, Monkey> {
 
 pub fn run_part1(input: &Vec<String>) -> usize {
     let mut monkeys = read_input(input);
-    for r in 0..20 {
+    for _ in 0..20 {
         monkeys.one_round(0);
     }
 
-    monkeys.monkey_busiess()
+    monkeys.monkey_business()
 }
 
 pub fn run_part2(input: &Vec<String>) -> usize {
@@ -303,10 +294,10 @@ pub fn run_part2(input: &Vec<String>) -> usize {
 
     let modulor = monkeys.get_modulor();
 
-    for r in 0..10000 {
+    for _ in 0..10000 {
         monkeys.one_round(modulor);
     }
-    monkeys.monkey_busiess()
+    monkeys.monkey_business()
 }
 
 pub fn run() -> io::Result<()> {
