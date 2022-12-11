@@ -2,7 +2,7 @@ use crate::helpers;
 use std::{
     collections::HashSet,
     hash::Hash,
-    io::{self, Error},
+    io,
     ops::{Add, Sub},
     str::FromStr,
 };
@@ -218,24 +218,18 @@ impl Rope {
         self.tail_visist.len() + 1
     }
     fn run_command(&mut self, cmd: &Command) {
-        for s in 0..cmd.steps {
+        for _ in 0..cmd.steps {
             for i in 0..self.knots.len() - 1 {
-                // use to keep track of where we want to go
-                let mut head_x = 0;
-                let mut head_y = 0;
-                {
-                    let mut head = self.knots.get_mut(i).unwrap();
+                let head = self.knots.get_mut(i).unwrap();
 
-                    // only first head moves all the time
-                    if i == 0 {
-                        head.move_dir(&cmd.direction);
-                    }
-                    head_x = head.x;
-                    head_y = head.y;
+                // only first head moves all the time
+                if i == 0 {
+                    head.move_dir(&cmd.direction);
                 }
-                let mut tail = self.knots.get_mut(i + 1).unwrap();
-                let x = tail.x;
-                let y = tail.y;
+                let head_x = head.x;
+                let head_y = head.y;
+
+                let tail = self.knots.get_mut(i + 1).unwrap();
 
                 // move tail towards head
                 let moved = tail.move_towards(head_x, head_y);
@@ -262,7 +256,7 @@ pub fn run_part1(input: &Vec<String>) -> usize {
 
     let mut rope = Rope::new(2);
 
-    for (i, c) in commands.iter().enumerate() {
+    for c in commands.iter() {
         rope.run_command(&c);
     }
 
@@ -277,7 +271,7 @@ pub fn run_part2(input: &Vec<String>) -> usize {
 
     let mut rope = Rope::new(10);
 
-    for (i, c) in commands.iter().enumerate() {
+    for c in commands.iter() {
         rope.run_command(&c);
     }
 
